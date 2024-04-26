@@ -1,0 +1,60 @@
+#include <Servo.h>
+Servo horizontal; // horizontal servo
+int servoh = 40;
+int servohLimitHigh = 150;
+int servohLimitLow = 10;
+Servo vertical; // vertical servo
+int servov = 45;
+int servovLimitHigh = 160;
+int servovLimitLow = 30;
+// LDR pin connections
+// name =analogpin;
+int verpos = 90;
+int horpos = 60;
+void setup(){
+  horizontal.attach(9);
+  vertical.attach(11);
+  Serial.begin(9600);
+  horizontal.write(90);
+  vertical.write(45);
+  delay(2500);
+}
+void loop(){
+
+  int topRight = analogRead(A0); // top right
+  int topLeft = analogRead(A1); // top left
+  int bottomRight = analogRead(A2); // bottom right
+  int bottomLeft = analogRead(A3); // bottom left
+  int avgTop = (topRight + topLeft) / 2;
+  int avgLeft = (topLeft + bottomLeft) / 2;
+  int avgRight = (topRight + bottomRight) / 2;
+  int avgBottom = (bottomRight + bottomLeft) / 2;
+  if (avgTop > avgBottom) {
+    if (servoh > servohLimitLow) {
+      servoh--;
+      horizontal.write(servoh);
+    }
+    delay(10);
+  }
+  else {
+    if (servoh < servohLimitHigh) {
+      servoh++;
+      horizontal.write(servoh);
+    }
+    delay(10);
+  }
+  if (avgLeft < avgRight) {
+    if (servov < servovLimitHigh) {
+      servov++;
+      vertical.write(servov);
+    }
+    delay(10);
+  }
+  else {
+    if (servov > servovLimitLow) {
+      servov--;
+      vertical.write(servov);
+    }
+    delay(10);
+  }
+}
